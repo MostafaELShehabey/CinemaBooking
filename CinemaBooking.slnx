@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="CinemaBooking/CinemaBooking.csproj" />
+  <Project Path="CinemaBooking.Application/CinemaBooking.Application.csproj" Id="c78134b9-1a13-4bb3-bb7b-511359c5ddcd" />
+  <Project Path="CinemaBooking.Domain/CinemaBooking.Domain.csproj" Id="3dbf7581-d0d5-4016-9ef8-7912cd83484f" />
+  <Project Path="CinemaBooking.Infrastructure/CinemaBooking.Infrastructure.csproj" Id="a0c8424c-45ca-43eb-a292-cf0bc504a693" />
+  <Project Path="CinemaBooking/CinemaBooking.API.csproj" />
 </Solution>
