@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CinemaBooking.Domain.Entities
+{
+    public class Screening
+    {
+        public int Id { get; set; }
+
+        public int MovieId { get; set; }
+
+        public int ScreenId { get; set; }
+
+        public DateTime StartTime { get; set; }
+
+        public DateTime EndTime { get; set; }
+
+        public decimal Price { get; set; }
+
+        public bool IsActive { get; set; }
+
+        // Navigation properties
+        public Movie Movie { get; set; } = null!;
+
+        public Screen Screen { get; set; } = null!;
+
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    }
+}
