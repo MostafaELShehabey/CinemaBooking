@@ -1,6 +1,235 @@
 @CinemaBooking_HostAddress = http://localhost:5128
 
-GET {{CinemaBooking_HostAddress}}/weatherforecast/
+############################################
+# Cinemas
+############################################
+
+### Get all cinemas
+GET {{CinemaBooking_HostAddress}}/api/cinemas
 Accept: application/json
 
-###
+### Get cinema by id
+GET {{CinemaBooking_HostAddress}}/api/cinemas/1
+Accept: application/json
+
+### Get screens for a cinema
+GET {{CinemaBooking_HostAddress}}/api/cinemas/1/screens
+Accept: application/json
+
+### Create cinema
+POST {{CinemaBooking_HostAddress}}/api/cinemas
+Content-Type: application/json
+
+{
+  "name": "Downtown Cinema",
+  "address": "12 Main Street"
+}
+
+### Update cinema
+PUT {{CinemaBooking_HostAddress}}/api/cinemas/1
+Content-Type: application/json
+
+{
+  "name": "Downtown Cinema",
+  "address": "14 Main Street"
+}
+
+### Delete cinema
+DELETE {{CinemaBooking_HostAddress}}/api/cinemas/1
+
+############################################
+# Movies
+############################################
+
+### Get all movies
+GET {{CinemaBooking_HostAddress}}/api/movies
+Accept: application/json
+
+### Get movie by id
+GET {{CinemaBooking_HostAddress}}/api/movies/1
+Accept: application/json
+
+### Get screenings for a movie
+GET {{CinemaBooking_HostAddress}}/api/movies/1/screenings
+Accept: application/json
+
+### Create movie
+POST {{CinemaBooking_HostAddress}}/api/movies
+Content-Type: application/json
+
+{
+  "title": "Inception",
+  "description": "A thief who steals corporate secrets through dream-sharing technology.",
+  "durationMinutes": 148,
+  "genre": "Sci-Fi",
+  "ageRating": "PG-13",
+  "posterUrl": null
+}
+
+### Update movie
+PUT {{CinemaBooking_HostAddress}}/api/movies/1
+Content-Type: application/json
+
+{
+  "title": "Inception",
+  "description": "A thief who steals corporate secrets through dream-sharing technology.",
+  "durationMinutes": 148,
+  "genre": "Sci-Fi",
+  "ageRating": "PG-13",
+  "posterUrl": null,
+  "isActive": true
+}
+
+### Delete movie
+DELETE {{CinemaBooking_HostAddress}}/api/movies/1
+
+############################################
+# Screens
+############################################
+
+### Get all screens
+GET {{CinemaBooking_HostAddress}}/api/screens
+Accept: application/json
+
+### Get screen by id
+GET {{CinemaBooking_HostAddress}}/api/screens/1
+Accept: application/json
+
+### Get seats for a screen
+GET {{CinemaBooking_HostAddress}}/api/screens/1/seats
+Accept: application/json
+
+### Get screenings for a screen
+GET {{CinemaBooking_HostAddress}}/api/screens/1/screenings
+Accept: application/json
+
+### Create screen
+POST {{CinemaBooking_HostAddress}}/api/screens
+Content-Type: application/json
+
+{
+  "cinemaId": 1,
+  "name": "Hall 1"
+}
+
+### Update screen
+PUT {{CinemaBooking_HostAddress}}/api/screens/1
+Content-Type: application/json
+
+{
+  "name": "Hall 1 IMAX"
+}
+
+### Delete screen
+DELETE {{CinemaBooking_HostAddress}}/api/screens/1
+
+############################################
+# Seats
+############################################
+
+### Get all seats
+GET {{CinemaBooking_HostAddress}}/api/seats
+Accept: application/json
+
+### Get seat by id
+GET {{CinemaBooking_HostAddress}}/api/seats/1
+Accept: application/json
+
+### Create seat
+POST {{CinemaBooking_HostAddress}}/api/seats
+Content-Type: application/json
+
+{
+  "screenId": 1,
+  "rowNumber": 1,
+  "seatNumber": 1
+}
+
+### Update seat
+PUT {{CinemaBooking_HostAddress}}/api/seats/1
+Content-Type: application/json
+
+{
+  "rowNumber": 1,
+  "seatNumber": 2,
+  "isActive": true
+}
+
+### Delete seat
+DELETE {{CinemaBooking_HostAddress}}/api/seats/1
+
+############################################
+# Screenings
+############################################
+
+### Get all screenings
+GET {{CinemaBooking_HostAddress}}/api/screenings
+Accept: application/json
+
+### Get screening by id
+GET {{CinemaBooking_HostAddress}}/api/screenings/1
+Accept: application/json
+
+### Get available seats for a screening
+GET {{CinemaBooking_HostAddress}}/api/screenings/1/available-seats
+Accept: application/json
+
+### Create screening
+POST {{CinemaBooking_HostAddress}}/api/screenings
+Content-Type: application/json
+
+{
+  "movieId": 1,
+  "screenId": 1,
+  "startTime": "2026-08-20T18:00:00Z",
+  "endTime": "2026-08-20T20:40:00Z",
+  "price": 12.50
+}
+
+### Update screening
+PUT {{CinemaBooking_HostAddress}}/api/screenings/1
+Content-Type: application/json
+
+{
+  "startTime": "2026-08-20T19:00:00Z",
+  "endTime": "2026-08-20T21:40:00Z",
+  "price": 14.00,
+  "isActive": true
+}
+
+### Delete screening
+DELETE {{CinemaBooking_HostAddress}}/api/screenings/1
+
+############################################
+# Bookings
+############################################
+
+### Get all bookings
+GET {{CinemaBooking_HostAddress}}/api/bookings
+Accept: application/json
+
+### Get booking by id
+GET {{CinemaBooking_HostAddress}}/api/bookings/1
+Accept: application/json
+
+### Create booking
+POST {{CinemaBooking_HostAddress}}/api/bookings
+Content-Type: application/json
+
+{
+  "screeningId": 1,
+  "customerName": "Alex Quinn",
+  "customerEmail": "alex@example.com",
+  "seatIds": [1]
+}
+
+### Update booking seats
+PUT {{CinemaBooking_HostAddress}}/api/bookings/1
+Content-Type: application/json
+
+{
+  "seatIds": [1]
+}
+
+### Cancel booking
+POST {{CinemaBooking_HostAddress}}/api/bookings/1/cancel
