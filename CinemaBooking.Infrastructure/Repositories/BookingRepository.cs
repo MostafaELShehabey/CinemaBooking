@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CinemaBooking.Infrastructure.Repositories;
 
-public class BookingRepository : IBookingRepository
+public class BookingRepository 
 {
     private readonly ApplicationDbContext _context;
 

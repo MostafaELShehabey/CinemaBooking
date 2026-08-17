@@ -8,9 +8,9 @@ public class NotFoundException : Exception
     }
 }
 
-public class BusinessRuleException : Exception
+public class ForbiddenException : Exception
 {
-    public BusinessRuleException(string message)
+    public ForbiddenException(string message = "You are not allowed to perform this action.")
         : base(message)
     {
     }
