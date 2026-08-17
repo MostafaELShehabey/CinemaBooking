@@ -13,6 +13,8 @@ public class BookingService : IBookingService
     private readonly IBookingSeatRepository _bookingSeatRepository;
     private readonly IScreeningRepository _screeningRepository;
     private readonly ISeatRepository _seatRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly ICurrentUserService _currentUser;
     private readonly IMapper _mapper;
 
     public BookingService(
@@ -20,33 +22,44 @@ public class BookingService : IBookingService
         IBookingSeatRepository bookingSeatRepository,
         IScreeningRepository screeningRepository,
         ISeatRepository seatRepository,
+        IUserRepository userRepository,
+        ICurrentUserService currentUser,
         IMapper mapper)
     {
         _bookingRepository = bookingRepository;
         _bookingSeatRepository = bookingSeatRepository;
         _screeningRepository = screeningRepository;
         _seatRepository = seatRepository;
+        _userRepository = userRepository;
+        _currentUser = currentUser;
         _mapper = mapper;
     }
 
     public async Task<IReadOnlyList<BookingDto>> GetAllAsync()
     {
-        var bookings = await _bookingRepository.GetAllAsync();
+        var bookings = _currentUser.IsAdmin
+            ? await _bookingRepository.GetAllAsync()
+            : await _bookingRepository.GetByUserIdAsync(_currentUser.UserId);
+
         return _mapper.Map<IReadOnlyList<BookingDto>>(bookings);
     }
 
     public async Task<BookingDto?> GetByIdAsync(int id)
     {
         var booking = await _bookingRepository.GetByIdWithSeatsAsync(id);
-        return booking is null ? null : _mapper.Map<BookingDto>(booking);
+        if (booking is null)
+        {
+            return null;
+        }
+
+        EnsureCanAccess(booking);
+        return _mapper.Map<BookingDto>(booking);
     }
 
     public async Task<BookingDto> CreateAsync(CreateBookingDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.CustomerName) || string.IsNullOrWhiteSpace(dto.CustomerEmail))
-        {
-            throw new BusinessRuleException("Customer name and email are required.");
-        }
+        var user = await _userRepository.GetByIdAsync(_currentUser.UserId)
+            ?? throw new NotFoundException(nameof(User), _currentUser.UserId);
 
         if (dto.SeatIds is null || dto.SeatIds.Count == 0)
         {
@@ -81,8 +94,9 @@ public class BookingService : IBookingService
         {
             BookingReference = GenerateReference(),
             ScreeningId = screening.Id,
-            CustomerName = dto.CustomerName,
-            CustomerEmail = dto.CustomerEmail,
+            UserId = user.Id,
+            CustomerName = user.FullName,
+            CustomerEmail = user.Email,
             BookingDate = DateTime.UtcNow,
             TotalAmount = screening.Price * seats.Count,
             Status = BookingStatus.Confirmed
@@ -109,6 +123,8 @@ public class BookingService : IBookingService
     {
         var booking = await _bookingRepository.GetByIdWithSeatsAsync(id)
             ?? throw new NotFoundException(nameof(Booking), id);
+
+        EnsureCanAccess(booking);
 
         if (booking.Status == BookingStatus.Cancelled)
         {
@@ -166,6 +182,8 @@ public class BookingService : IBookingService
         var booking = await _bookingRepository.GetByIdWithSeatsAsync(id)
             ?? throw new NotFoundException(nameof(Booking), id);
 
+        EnsureCanAccess(booking);
+
         if (booking.Status == BookingStatus.Cancelled)
         {
             throw new BusinessRuleException("This booking is already cancelled.");
@@ -175,6 +193,14 @@ public class BookingService : IBookingService
         _bookingRepository.Update(booking);
         await _bookingRepository.SaveChangesAsync();
         return _mapper.Map<BookingDto>(booking);
+    }
+
+    private void EnsureCanAccess(Booking booking)
+    {
+        if (!_currentUser.IsAdmin && booking.UserId != _currentUser.UserId)
+        {
+            throw new ForbiddenException();
+        }
     }
 
     private async Task<List<Seat>> ResolveSeatsForScreeningAsync(Screening screening, IEnumerable<int> seatIds)

@@ -13,6 +13,8 @@ namespace CinemaBooking.Application.Interfaces
 
         Task<Booking?> GetByIdWithSeatsAsync(int id);
 
+        Task<IEnumerable<Booking>> GetByUserIdAsync(int userId);
+
         Task AddAsync(Booking booking);
 
         void Update(Booking booking);

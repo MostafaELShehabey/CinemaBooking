@@ -8,6 +8,8 @@ public class BookingDto
 
     public int ScreeningId { get; set; }
 
+    public int UserId { get; set; }
+
     public string CustomerName { get; set; } = string.Empty;
 
     public string CustomerEmail { get; set; } = string.Empty;

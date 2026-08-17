@@ -13,6 +13,8 @@ namespace CinemaBooking.Domain.Entities
 
         public int ScreeningId { get; set; }
 
+        public int UserId { get; set; }
+
         public string CustomerName { get; set; } = string.Empty;
 
         public string CustomerEmail { get; set; } = string.Empty;
@@ -25,6 +27,8 @@ namespace CinemaBooking.Domain.Entities
 
         // Navigation properties
         public Screening Screening { get; set; } = null!;
+
+        public User User { get; set; } = null!;
 
         public ICollection<BookingSeat> BookingSeats { get; set; } = new List<BookingSeat>();
     }
